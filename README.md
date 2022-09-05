@@ -10,7 +10,7 @@ This project is currently work in progress and may have experience significant c
 
 **PostgreSQL version compatibility**
 
-Currently tested against PostgreSQL 9.4+, 10, 11, 12. Other versions might work but unconfirmed.
+Currently tested against PostgreSQL 9.4+, 10, 11, 12, 14. Other versions might work but unconfirmed.
 
 ## Building
 ### Dependencies:
@@ -20,10 +20,10 @@ Currently tested against PostgreSQL 9.4+, 10, 11, 12. Other versions might work 
 
 ### Build
 ```
-  PATH=<pgsql_prefix>/bin:$PATH make
-  sudo PATH=<pgsql_prefix>/bin:$PATH make install
+  PATH=<pgsql_prefix>:$PATH make
+  sudo PATH=<pgsql_prefix>:$PATH make install
 ```
-where pgsql\_prefix is where you've installed PostgreSQL to, e.g. /usr/local/postgresql/9.4.0
+where pgsql\_prefix is where you've installed PostgreSQL to, e.g. /usr/share/postgresql/14:
 
 ## Options
 
