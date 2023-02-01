@@ -1350,7 +1350,11 @@ get_psql_columns(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			DefElem *def = (DefElem *)lfirst(option);
 
 			if (strcmp(def->defname, OPT_REDIS) == 0) {
+				#if PG_VERSION_NUM < 150000
 				colname = ((Value *)(def->arg))->val.str;
+				#else
+				colname = ((String *)(def->arg))->sval;
+				#endif
 
 				DEBUG((DEBUG_LEVEL, "table %s column remapped (%s) -> (%s)",
 				        tablename, NameStr(att_tuple->attname), colname));
@@ -3355,7 +3359,11 @@ redisAddForeignUpdateTargets(Query *parsetree,
 			DefElem *def = (DefElem *)lfirst(option);
 
 			if (strcmp(def->defname, OPT_REDIS) == 0) {
+				#if PG_VERSION_NUM < 150000
 				colname = ((Value *)(def->arg))->val.str;
+				#else
+				colname = ((String *)(def->arg))->sval;
+				#endif
 
 				DEBUG((DEBUG_LEVEL, "column remapped (%s) -> (%s)",
 				        NameStr(att->attname), colname));
