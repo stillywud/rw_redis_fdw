@@ -2035,8 +2035,12 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 
 	rctx->port = 6379;
 	rctx->database = 0;
+	elog(LOG, "Redis FDW options:");
+
 	foreach (lc, options) {
 		DefElem *def = (DefElem *) lfirst(lc);
+		elog(LOG, "  %s = %s", def->defname, defGetString(def));
+
 		char *v;
 
 		if (rctx->key == NULL) {
