@@ -2040,7 +2040,9 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 
 	foreach (lc, options) {
 		DefElem *def = (DefElem *) lfirst(lc);
-		elog(LOG, "  %s = %s", def->defname, defGetString(def));
+		const char *value = defGetString(def);
+
+		elog(LOG, "  %s = %s", def->defname, value);
 
 		char *v;
 
@@ -2081,21 +2083,22 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			o_port = true;
 			continue;
 		}
-		if (redis_opt_string(def, OPT_TIMEOUT_SEC, &v) != NULL) {
-			rctx->timeout_sec = atoi(v);
-			continue;
-		}else
-		{
-			rctx->timeout_sec = 3;
-		}
-
-		if (redis_opt_string(def, OPT_TIMEOUT_USEC, &v) != NULL) {
-			rctx->timeout_usec = atoi(v);
-			continue;
-		}else
-		{
-			rctx->timeout_usec = 4;
-		}
+		 if (strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
+        if (value != NULL) {
+            rctx->timeout_sec = atoi(value);
+            continue;
+        } else {
+            rctx->timeout_sec = 3;
+        }
+    } 
+	if (strcmp(def->defname, OPT_TIMEOUT_USEC) == 0) {
+        if (value != NULL) {
+            rctx->timeout_usec = atoi(value);
+            continue;
+        } else {
+            rctx->timeout_usec = 4;
+        }
+    }
 		
 
 		if (!o_db && redis_opt_string(def, OPT_DATABASE, &v) != NULL) {
@@ -2142,10 +2145,11 @@ redis_do_connect(struct redis_fdw_ctx *rctx)
     timeout.tv_sec = rctx->timeout_sec;   // 使用 rctx 的超时秒数
     timeout.tv_usec = rctx->timeout_usec; // 使用 rctx 的超时微秒数
   // 打印超时时间
- 
-	ereport(ERROR,
-		        (errcode(ERRCODE_FDW_UNABLE_TO_ESTABLISH_CONNECTION),
-		         errmsg("timeout to connect to Redis: sec = %d, usec = %d", timeout.tv_sec, timeout.tv_usec)));
+  
+   	elog(LOG, "rctx->timeout_sec to connect to Redis: sec = %d, usec = %d",  rctx->timeout_sec, rctx->timeout_usec);
+
+ 	elog(LOG, "timeout to connect to Redis: sec = %d, usec = %d",  timeout.tv_sec, timeout.tv_usec);
+
 	if (rctx->host[0] == '/') {
 		ctx = redisConnectUnixWithTimeout(rctx->host, timeout);
 	} else {
