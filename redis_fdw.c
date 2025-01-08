@@ -2121,8 +2121,10 @@ redis_do_connect(struct redis_fdw_ctx *rctx)
     timeout.tv_sec = rctx->timeout_sec;   // 使用 rctx 的超时秒数
     timeout.tv_usec = rctx->timeout_usec; // 使用 rctx 的超时微秒数
   // 打印超时时间
-    errmsg("timeout to connect to Redis: sec = %d, usec = %d", timeout.tv_sec, timeout.tv_usec);
-
+ 
+	ereport(ERROR,
+		        (errcode(ERRCODE_FDW_UNABLE_TO_ESTABLISH_CONNECTION),
+		         errmsg("timeout to connect to Redis: sec = %d, usec = %d", timeout.tv_sec, timeout.tv_usec)));
 	if (rctx->host[0] == '/') {
 		ctx = redisConnectUnixWithTimeout(rctx->host, timeout);
 	} else {
