@@ -2076,6 +2076,16 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			o_port = true;
 			continue;
 		}
+		if (redis_opt_string(def, OPT_TIMEOUT_SEC, &v) != NULL) {
+			rctx->timeout_sec = atoi(v);
+			continue;
+		}
+
+		if (redis_opt_string(def, OPT_TIMEOUT_USEC, &v) != NULL) {
+			rctx->timeout_usec = atoi(v);
+			continue;
+		}
+		
 
 		if (!o_db && redis_opt_string(def, OPT_DATABASE, &v) != NULL) {
 			rctx->database = atoi(v);
