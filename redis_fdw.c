@@ -2084,23 +2084,26 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			continue;
 		}
 	if (strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
-		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
 
         if (value != NULL) {
             rctx->timeout_sec = atoi(value);
         } else {
             rctx->timeout_sec = 3;
         }
+		
+		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+
 		continue;
     } 
 	if (strcmp(def->defname, OPT_TIMEOUT_USEC) == 0) {
-		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
 
         if (value != NULL) {
             rctx->timeout_usec = atoi(value);
         } else {
             rctx->timeout_usec = 4;
         }
+		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+
 		continue;
 
     }
