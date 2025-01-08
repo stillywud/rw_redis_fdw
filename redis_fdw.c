@@ -2238,6 +2238,7 @@ redisGetForeignRelSize(PlannerInfo *root,
 			rctx->pfxkey = rctx->key;
 		}
 	}
+	elog(LOG, "入口1" );
 
 	ctx = redis_do_connect(rctx);
 	reply = NULL;
@@ -2733,6 +2734,7 @@ redisIterateForeignScan(ForeignScanState *node)
 			ExecClearTuple(slot);
 			goto fill_slot;
 		}
+	elog(LOG, "入口2" );
 
 		ctx = redis_do_connect(rctx);
 
@@ -3826,6 +3828,7 @@ redisBeginForeignModify(ModifyTableState *mtstate,
 		rctx->value_attno = ExecFindJunkAttributeInTlist(subplan->targetlist,
 		                                               "value");
 	}
+	elog(LOG, "入口3" );
 
 	/* connect */
 	redis_do_connect(rctx);
