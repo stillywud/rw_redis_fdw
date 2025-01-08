@@ -2042,7 +2042,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 		DefElem *def = (DefElem *) lfirst(lc);
 		const char *value = defGetString(def);
 
-		elog(LOG, "  %s = %s", def->defname, value);
+		elog(LOG, "  %s = %s  ??%s %s", def->defname, value,OPT_TIMEOUT_SEC,OPT_TIMEOUT_USEC);
 
 		char *v;
 
@@ -2083,21 +2083,26 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			o_port = true;
 			continue;
 		}
-		 if (strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
+	if (strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
+		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+
         if (value != NULL) {
             rctx->timeout_sec = atoi(value);
-            continue;
         } else {
             rctx->timeout_sec = 3;
         }
+		continue;
     } 
 	if (strcmp(def->defname, OPT_TIMEOUT_USEC) == 0) {
+		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+
         if (value != NULL) {
             rctx->timeout_usec = atoi(value);
-            continue;
         } else {
             rctx->timeout_usec = 4;
         }
+		continue;
+
     }
 		
 
