@@ -2017,9 +2017,9 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 	UserMapping *mapping;
 	List     *options;
 	ListCell *lc;
-	bool o_port, o_db, o_ttype;
+	bool o_port, o_db, o_ttype, o_timeout_sec, o_timeout_usec;
 
-	o_port = o_db = o_ttype = false;
+	o_port = o_db = o_ttype = o_timeout_sec = o_timeout_usec= false;
 
 	/* Lookup foreign table catalog info. */
 	rctx->table = GetForeignTable(foreigntableid);
@@ -2083,7 +2083,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 			o_port = true;
 			continue;
 		}
-	if (strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
+	if (!o_timeout_sec && strcmp(def->defname, OPT_TIMEOUT_SEC) == 0) {
 
         if (value != NULL) {
             rctx->timeout_sec = atoi(value);
@@ -2095,7 +2095,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 
 		continue;
     } 
-	if (strcmp(def->defname, OPT_TIMEOUT_USEC) == 0) {
+	if (!o_timeout_usec && strcmp(def->defname, OPT_TIMEOUT_USEC) == 0) {
 
         if (value != NULL) {
             rctx->timeout_usec = atoi(value);
