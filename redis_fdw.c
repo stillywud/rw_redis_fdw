@@ -2034,7 +2034,8 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 	options = list_concat(options, rctx->table->options);
 
 	rctx->port = 6379;
-	rctx->database = 0;
+	rctx->timeout_sec  = 1;
+	rctx->timeout_usec  = 2;
 	elog(LOG, "Redis FDW options:");
 
 	foreach (lc, options) {
@@ -2083,11 +2084,17 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 		if (redis_opt_string(def, OPT_TIMEOUT_SEC, &v) != NULL) {
 			rctx->timeout_sec = atoi(v);
 			continue;
+		}else
+		{
+			rctx->timeout_sec = 3;
 		}
 
 		if (redis_opt_string(def, OPT_TIMEOUT_USEC, &v) != NULL) {
 			rctx->timeout_usec = atoi(v);
 			continue;
+		}else
+		{
+			rctx->timeout_usec = 4;
 		}
 		
 
