@@ -229,7 +229,9 @@ struct redis_fdw_option {
 
 #define OPT_HOST      "host"
 #define OPT_PORT      "port"
-#define OPT_TIMEOUT   "timeout"
+#define OPT_TIMEOUT_SEC   "timeout_sec"
+#define OPT_TIMEOUT_USEC   "timeout_usec"
+
 #define OPT_PASSWORD  "password"
 #define OPT_DATABASE  "database"
 #define OPT_KEY       "key"
@@ -244,7 +246,8 @@ static struct redis_fdw_option valid_options[] =
 	/* Connection options */
 	{OPT_HOST, ForeignServerRelationId},
 	{OPT_PORT, ForeignServerRelationId},
-	{OPT_TIMEOUT, ForeignServerRelationId},
+	{OPT_TIMEOUT_SEC, ForeignServerRelationId},
+	{OPT_TIMEOUT_USEC, ForeignServerRelationId},
 	{OPT_PASSWORD, UserMappingRelationId},
 	{OPT_DATABASE, ForeignTableRelationId},
 
@@ -472,6 +475,8 @@ struct redis_fdw_ctx {
 
 	char *host;
 	int   port;
+	unsigned long timeout_sec;    // 新增字段
+    unsigned long timeout_usec;   // 新增字段
 	char *password;
 	int   database;
 	enum redis_data_type table_type;
@@ -902,6 +907,9 @@ redis_serialize_fdw(struct redis_fdw_ctx *rctx)
 
 	result = lappend(result, serializeString(rctx->host));
 	result = lappend(result, serializeInt32(rctx->port));
+	
+	
+
 	result = lappend(result, serializeString(rctx->password));
 	result = lappend(result, serializeInt32(rctx->database));
 	result = lappend(result, serializeInt32(rctx->table_type));
@@ -2107,7 +2115,11 @@ redis_do_connect(struct redis_fdw_ctx *rctx)
 {
 	redisContext *ctx;
 	redisReply *reply;
-	struct timeval timeout = {1, 0};
+    struct timeval timeout;
+
+    // 设置超时时间
+    timeout.tv_sec = rctx->timeout_sec;   // 使用 rctx 的超时秒数
+    timeout.tv_usec = rctx->timeout_usec; // 使用 rctx 的超时微秒数
 
 	if (rctx->host[0] == '/') {
 		ctx = redisConnectUnixWithTimeout(rctx->host, timeout);
