@@ -2091,7 +2091,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
             rctx->timeout_sec = 3;
         }
 		
-		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_sec);
 
 		continue;
     } 
@@ -2102,7 +2102,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
         } else {
             rctx->timeout_usec = 4;
         }
-		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s", def->defname, OPT_TIMEOUT_USEC,value);
+		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_usec);
 
 		continue;
 
