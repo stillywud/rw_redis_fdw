@@ -1,5 +1,29 @@
 # Writable Foreign Data Wrapper for Redis
 
+新增16、17的支持，参考命令
+
+```
+CREATE EXTENSION IF NOT EXISTS redis_fdw;
+
+DROP SERVER redis_server  CASCADE  ;
+--CREATE SERVER redis_server FOREIGN DATA WRAPPER redis_fdw OPTIONS (HOST '192.168.28.203', port '6379');
+CREATE SERVER redis_server FOREIGN DATA WRAPPER redis_fdw OPTIONS (HOST '192.168.28.203', port '6379',timeout_sec '1',timeout_usec '0');
+CREATE USER MAPPING FOR postgres SERVER redis_server OPTIONS (PASSWORD 'ITwh@306');
+CREATE FOREIGN TABLE biz_common_postgis_pub (channel TEXT, message TEXT, len INT) SERVER redis_server OPTIONS (tabletype'publish');
+INSERT INTO biz_common_postgis_pub (channel, message)VALUES ('postgis_channel', 'data');
+
+select version();
+SELECT current_setting('server_version_num');
+```
+
+主要是新增了对超时时间的支持。原来默认是1秒，现在可以自定义，增加对pg16、pg17的支持。
+
+![1736403405603](README.assets/1736403405603.png)
+
+
+
+
+
 This PostgreSQL extension provides a Foreign Data Wrapper for read (SELECT) and write (INSERT, UPDATE, DELETE) access to Redis databases (http://redis.io). Supported Redis data types include: string, set, hash, list, zset, and pubsub.
 
 *Note* that the output FDW module is called **redis\_fdw**, even though this repository is called rw\_redis\_fdw and not be confused with https://github.com/pg-redis-fdw/redis_fdw (which was used as a basis for the table schema but with very different code), to enable existing users to migrate to this repo.  Instructions hereon-in refer to this repository only.
@@ -10,7 +34,7 @@ This project is currently work in progress and may have experience significant c
 
 **PostgreSQL version compatibility**
 
-Currently tested against PostgreSQL 9.4+, 10, 11, 12, 14, 15. Other versions might work but unconfirmed.
+Currently tested against PostgreSQL 9.4+, 10, 11, 12, 14, 15,16,17. Other versions might work but unconfirmed.
 
 ## Building
 ### Dependencies:
