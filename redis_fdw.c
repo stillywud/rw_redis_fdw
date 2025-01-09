@@ -3706,15 +3706,18 @@ redisPlanForeignModify(PlannerInfo *root,
 		#if PG_VERSION_NUM >= 160000
 			RelOptInfo *relbase = find_base_rel(root, resultRelation);
 			tmpset = bms_copy(get_rel_all_updated_cols(root, relbase));
+			while ((i = bms_next_member(tmpset,i)) >= 0) {
+
 		#else
 			#if PG_VERSION_NUM < 90500
 				tmpset = bms_copy(rte->modifiedCols);
 			#else
 				tmpset = bms_copy(rte->updatedCols);
 			#endif  
+			while ((i = bms_first_member(tmpset)) >= 0) {
 		#endif
 
-		while ((i = bms_first_member(tmpset)) >= 0) {
+		
 			/* bit numbers are offset by FirstLowInvalidHeapAttributeNumber */
 			AttrNumber attno = i + FirstLowInvalidHeapAttributeNumber;
 
