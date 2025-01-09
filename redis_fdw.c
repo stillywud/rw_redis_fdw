@@ -3703,7 +3703,7 @@ redisPlanForeignModify(PlannerInfo *root,
 		rel = TABLE_OPEN(rte->relid, NoLock);
 
 		/* figure out which attributes are affected */
-		#if PG_VERSION_NUM >= 150000
+		#if PG_VERSION_NUM >= 160000
 			RelOptInfo *relbase = find_base_rel(root, resultRelation);
 			tmpset = bms_copy(get_rel_all_updated_cols(root, relbase));
 		#else
