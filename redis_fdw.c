@@ -2402,6 +2402,9 @@ redisGetForeignPaths(PlannerInfo *root,
 #if PG_VERSION_NUM >= 90500
 	       NULL,    /* no extra plan */
 #endif
+#if PG_VERSION_NUM >= 170000
+	       NIL,    /* no fdw_restrictinfo list */
+#endif
 	       NIL));   /* no fdw_private data */
 }
 
