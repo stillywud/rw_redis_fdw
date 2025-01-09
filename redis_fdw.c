@@ -977,6 +977,7 @@ redis_deserialize_fdw(List *list)
 	struct where_conds *wc;
 
 	DEBUG((DEBUG_LEVEL, "___ %s", __FUNCTION__));
+	elog(LOG, "进入redis_deserialize_fdw" );
 
 	rctx = (struct redis_fdw_ctx *)palloc0(sizeof(struct redis_fdw_ctx));
 
@@ -988,27 +989,27 @@ redis_deserialize_fdw(List *list)
  
 	rctx->host = deserializeString(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-    elog(INFO, "Current cell value rctx->host: %s", rctx->host); 
+    elog(LOG, "Current cell value rctx->host: %s", rctx->host); 
 	rctx->port = (int)deserializeInt(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-    elog(INFO, "Current cell value rctx->host: %d", rctx->port); 
+    elog(LOG, "Current cell value rctx->host: %d", rctx->port); 
 
 	rctx->password = deserializeString(lfirst(cell));
-	elog(INFO, "Current cell value rctx->password: %s", rctx->password); 
+	elog(LOG, "Current cell value rctx->password: %s", rctx->password); 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->database = (int)deserializeInt(lfirst(cell));
-	elog(INFO, "Current cell value rctx->database: %d", rctx->database); 
+	elog(LOG, "Current cell value rctx->database: %d", rctx->database); 
 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->table_type = (enum redis_data_type)deserializeInt(lfirst(cell));
-	elog(INFO, "Current cell value rctx->table_type: %d", rctx->table_type); 
+	elog(LOG, "Current cell value rctx->table_type: %d", rctx->table_type); 
 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->key = deserializeString(lfirst(cell));
-	elog(INFO, "Current cell value rctx->key: %d", rctx->key); 
+	elog(LOG, "Current cell value rctx->key: %d", rctx->key); 
 
 	cell = PG_LIST_NEXT(list, cell);
 	rctx->keyprefix = deserializeString(lfirst(cell));
@@ -3837,6 +3838,12 @@ redisBeginForeignModify(ModifyTableState *mtstate,
 		                                               "value");
 	}
 	elog(LOG, "入口3" );
+    elog(LOG, "入口3 cell value rctx->host: %s", rctx->host); 
+    elog(LOG, "入口3 cell value rctx->host: %d", rctx->port); 
+	elog(LOG, "入口3 cell value rctx->password: %s", rctx->password); 
+	elog(LOG, "入口3 cell value rctx->database: %d", rctx->database); 
+	elog(LOG, "入口3 cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+	elog(LOG, "入口3 cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
 
 	/* connect */
 	redis_do_connect(rctx);
