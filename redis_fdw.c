@@ -901,6 +901,13 @@ redis_serialize_fdw(struct redis_fdw_ctx *rctx)
 	int len = 0;
 	struct redis_param_desc *param;
 	struct where_conds *wc;
+    elog(LOG, "进入 redis_serialize_fdw 方法"); 
+    elog(LOG, "redis_serialize_fdw cell value rctx->host: %s", rctx->host); 
+    elog(LOG, "redis_serialize_fdw cell value rctx->host: %d", rctx->port); 
+	elog(LOG, "redis_serialize_fdw cell value rctx->password: %s", rctx->password); 
+	elog(LOG, "redis_serialize_fdw cell value rctx->database: %d", rctx->database); 
+	elog(LOG, "redis_serialize_fdw cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+	elog(LOG, "redis_serialize_fdw cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
 
 	result = lappend(result, redis_serialize_rtable(rctx));
 	result = lappend(result, redis_serialize_rtable_cols(rctx));
@@ -912,6 +919,10 @@ redis_serialize_fdw(struct redis_fdw_ctx *rctx)
 
 	result = lappend(result, serializeString(rctx->password));
 	result = lappend(result, serializeInt32(rctx->database));
+	//添加超时设置
+	result = lappend(result, serializeInt64(rctx->timeout_sec));
+	result = lappend(result, serializeInt64(rctx->timeout_usec));
+	
 	result = lappend(result, serializeInt32(rctx->table_type));
 
 	result = lappend(result, serializeString(rctx->key));
@@ -1000,6 +1011,17 @@ redis_deserialize_fdw(List *list)
 
 	rctx->database = (int)deserializeInt(lfirst(cell));
 	elog(LOG, "Current cell value rctx->database: %d", rctx->database); 
+
+
+	cell = PG_LIST_NEXT(list, cell);
+	rctx->timeout_sec = deserializeInt(lfirst(cell));
+	elog(LOG, "Current cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+
+	cell = PG_LIST_NEXT(list, cell);
+	rctx->timeout_usec = deserializeInt(lfirst(cell));
+	elog(LOG, "Current cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
+
+
 
 	cell = PG_LIST_NEXT(list, cell);
 
