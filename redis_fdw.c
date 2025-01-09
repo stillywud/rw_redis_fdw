@@ -983,34 +983,34 @@ redis_deserialize_fdw(List *list)
 	redis_deserialize_rtable(rctx, lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
   // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
 	redis_deserialize_rtable_cols(rctx, lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
   
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 	cell = PG_LIST_NEXT(list, cell);
     // 这里打印 cell 的内容
-    ELOG(INFO, "Current cell value after redis_deserialize_rtable: %s", 
+    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
          (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
 		 
 	rctx->host = deserializeString(lfirst(cell));
