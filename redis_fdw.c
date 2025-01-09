@@ -3704,6 +3704,7 @@ redisPlanForeignModify(PlannerInfo *root,
 
 		/* figure out which attributes are affected */
 		#if PG_VERSION_NUM >= 160000
+			//增加对16.0+版本的支持
 			RelOptInfo *relbase = find_base_rel(root, resultRelation);
 			tmpset = bms_copy(get_rel_all_updated_cols(root, relbase));
 			while ((i = bms_next_member(tmpset,i)) >= 0) {
