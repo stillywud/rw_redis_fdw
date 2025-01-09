@@ -3535,6 +3535,7 @@ redisPlanForeignModify(PlannerInfo *root,
 	struct redis_fdw_ctx *rctx;
 	CmdType        operation = plan->operation;
 	RangeTblEntry *rte = planner_rt_fetch(resultRelation, root);
+
 	Relation       rel = NULL;
 	Bitmapset     *tmpset;
 	List          *targetAttrs = NIL;
@@ -3702,11 +3703,16 @@ redisPlanForeignModify(PlannerInfo *root,
 		rel = TABLE_OPEN(rte->relid, NoLock);
 
 		/* figure out which attributes are affected */
-#if PG_VERSION_NUM < 90500
-		tmpset = bms_copy(rte->modifiedCols);
-#else
-		tmpset = bms_copy(rte->updatedCols);
-#endif
+		#if PG_VERSION_NUM >= 160000
+			RelOptInfo *relbase = find_base_rel(root, resultRelation);
+			tmpset = get_rel_all_updated_cols(root, relbase);
+		#else
+			#if PG_VERSION_NUM < 90500
+				tmpset = bms_copy(rte->modifiedCols);
+			#else
+				tmpset = bms_copy(rte->updatedCols);
+			#endif
+		#endif
 
 		while ((i = bms_first_member(tmpset)) >= 0) {
 			/* bit numbers are offset by FirstLowInvalidHeapAttributeNumber */
