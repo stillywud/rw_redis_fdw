@@ -901,13 +901,13 @@ redis_serialize_fdw(struct redis_fdw_ctx *rctx)
 	int len = 0;
 	struct redis_param_desc *param;
 	struct where_conds *wc;
-    elog(LOG, "进入 redis_serialize_fdw 方法"); 
-    elog(LOG, "redis_serialize_fdw cell value rctx->host: %s", rctx->host); 
-    elog(LOG, "redis_serialize_fdw cell value rctx->host: %d", rctx->port); 
-	elog(LOG, "redis_serialize_fdw cell value rctx->password: %s", rctx->password); 
-	elog(LOG, "redis_serialize_fdw cell value rctx->database: %d", rctx->database); 
-	elog(LOG, "redis_serialize_fdw cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
-	elog(LOG, "redis_serialize_fdw cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
+    //elog(LOG, "进入 redis_serialize_fdw 方法"); 
+    //elog(LOG, "redis_serialize_fdw cell value rctx->host: %s", rctx->host); 
+    //elog(LOG, "redis_serialize_fdw cell value rctx->host: %d", rctx->port); 
+	//elog(LOG, "redis_serialize_fdw cell value rctx->password: %s", rctx->password); 
+	//elog(LOG, "redis_serialize_fdw cell value rctx->database: %d", rctx->database); 
+	//elog(LOG, "redis_serialize_fdw cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+	//elog(LOG, "redis_serialize_fdw cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
 
 	result = lappend(result, redis_serialize_rtable(rctx));
 	result = lappend(result, redis_serialize_rtable_cols(rctx));
@@ -988,7 +988,7 @@ redis_deserialize_fdw(List *list)
 	struct where_conds *wc;
 
 	DEBUG((DEBUG_LEVEL, "___ %s", __FUNCTION__));
-	elog(LOG, "进入redis_deserialize_fdw" );
+	//elog(LOG, "进入redis_deserialize_fdw" );
 
 	rctx = (struct redis_fdw_ctx *)palloc0(sizeof(struct redis_fdw_ctx));
 
@@ -1000,38 +1000,38 @@ redis_deserialize_fdw(List *list)
  
 	rctx->host = deserializeString(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-    elog(LOG, "Current cell value rctx->host: %s", rctx->host); 
+    //elog(LOG, "Current cell value rctx->host: %s", rctx->host); 
 	rctx->port = (int)deserializeInt(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-    elog(LOG, "Current cell value rctx->host: %d", rctx->port); 
+    //elog(LOG, "Current cell value rctx->host: %d", rctx->port); 
 
 	rctx->password = deserializeString(lfirst(cell));
-	elog(LOG, "Current cell value rctx->password: %s", rctx->password); 
+	//elog(LOG, "Current cell value rctx->password: %s", rctx->password); 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->database = (int)deserializeInt(lfirst(cell));
-	elog(LOG, "Current cell value rctx->database: %d", rctx->database); 
+	//elog(LOG, "Current cell value rctx->database: %d", rctx->database); 
 
 
 	cell = PG_LIST_NEXT(list, cell);
 	rctx->timeout_sec = deserializeInt(lfirst(cell));
-	elog(LOG, "Current cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+	//elog(LOG, "Current cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
 
 	cell = PG_LIST_NEXT(list, cell);
 	rctx->timeout_usec = deserializeInt(lfirst(cell));
-	elog(LOG, "Current cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
+	//elog(LOG, "Current cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
 
 
 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->table_type = (enum redis_data_type)deserializeInt(lfirst(cell));
-	elog(LOG, "Current cell value rctx->table_type: %d", rctx->table_type); 
+	//elog(LOG, "Current cell value rctx->table_type: %d", rctx->table_type); 
 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->key = deserializeString(lfirst(cell));
-	elog(LOG, "Current cell value rctx->key: %d", rctx->key); 
+	//elog(LOG, "Current cell value rctx->key: %d", rctx->key); 
 
 	cell = PG_LIST_NEXT(list, cell);
 	rctx->keyprefix = deserializeString(lfirst(cell));
@@ -2065,15 +2065,16 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
 	options = list_concat(options, rctx->table->options);
 
 	rctx->port = 6379;
+	//设置默认超时时间 1秒+0微秒
 	rctx->timeout_sec  = 1;
-	rctx->timeout_usec  = 2;
-	elog(LOG, "Redis FDW options:");
+	rctx->timeout_usec  = 0;
+	//elog(LOG, "Redis FDW options:");
 
 	foreach (lc, options) {
 		DefElem *def = (DefElem *) lfirst(lc);
 		const char *value = defGetString(def);
 
-		elog(LOG, "  %s = %s  ??%s %s", def->defname, value,OPT_TIMEOUT_SEC,OPT_TIMEOUT_USEC);
+		//elog(LOG, "  %s = %s  ??%s %s", def->defname, value,OPT_TIMEOUT_SEC,OPT_TIMEOUT_USEC);
 
 		char *v;
 
@@ -2122,7 +2123,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
             rctx->timeout_sec = 3;
         }
 		
-		elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_sec);
+		//elog(LOG, "OPT_TIMEOUT_SEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_sec);
 
 		continue;
     } 
@@ -2133,7 +2134,7 @@ redis_get_table_options(Oid foreigntableid, struct redis_fdw_ctx *rctx)
         } else {
             rctx->timeout_usec = 4;
         }
-		elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_usec);
+		//elog(LOG, "OPT_TIMEOUT_USEC found!!!! %s|%s|%s---%d", def->defname, OPT_TIMEOUT_USEC,value,rctx->timeout_usec);
 
 		continue;
 
@@ -2185,9 +2186,9 @@ redis_do_connect(struct redis_fdw_ctx *rctx)
     timeout.tv_usec = rctx->timeout_usec; // 使用 rctx 的超时微秒数
   // 打印超时时间
   
-   	elog(LOG, "rctx->timeout_sec to connect to Redis: sec = %d, usec = %d",  rctx->timeout_sec, rctx->timeout_usec);
+   	//elog(LOG, "rctx->timeout_sec to connect to Redis: sec = %d, usec = %d",  rctx->timeout_sec, rctx->timeout_usec);
 
- 	elog(LOG, "timeout to connect to Redis: sec = %d, usec = %d",  timeout.tv_sec, timeout.tv_usec);
+ 	//elog(LOG, "timeout to connect to Redis: sec = %d, usec = %d",  timeout.tv_sec, timeout.tv_usec);
 
 	if (rctx->host[0] == '/') {
 		ctx = redisConnectUnixWithTimeout(rctx->host, timeout);
@@ -2269,7 +2270,7 @@ redisGetForeignRelSize(PlannerInfo *root,
 			rctx->pfxkey = rctx->key;
 		}
 	}
-	elog(LOG, "入口1" );
+	//elog(LOG, "入口1" );
 
 	ctx = redis_do_connect(rctx);
 	reply = NULL;
@@ -2765,7 +2766,7 @@ redisIterateForeignScan(ForeignScanState *node)
 			ExecClearTuple(slot);
 			goto fill_slot;
 		}
-	elog(LOG, "入口2" );
+		//elog(LOG, "入口2" );
 
 		ctx = redis_do_connect(rctx);
 
@@ -3859,13 +3860,13 @@ redisBeginForeignModify(ModifyTableState *mtstate,
 		rctx->value_attno = ExecFindJunkAttributeInTlist(subplan->targetlist,
 		                                               "value");
 	}
-	elog(LOG, "入口3" );
-    elog(LOG, "入口3 cell value rctx->host: %s", rctx->host); 
-    elog(LOG, "入口3 cell value rctx->host: %d", rctx->port); 
-	elog(LOG, "入口3 cell value rctx->password: %s", rctx->password); 
-	elog(LOG, "入口3 cell value rctx->database: %d", rctx->database); 
-	elog(LOG, "入口3 cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
-	elog(LOG, "入口3 cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
+	//elog(LOG, "入口3" );
+    //elog(LOG, "入口3 cell value rctx->host: %s", rctx->host); 
+    //elog(LOG, "入口3 cell value rctx->host: %d", rctx->port); 
+	//elog(LOG, "入口3 cell value rctx->password: %s", rctx->password); 
+	//elog(LOG, "入口3 cell value rctx->database: %d", rctx->database); 
+	//elog(LOG, "入口3 cell value rctx->timeout_sec: %d", rctx->timeout_sec); 
+	//elog(LOG, "入口3 cell value rctx->timeout_usec: %d", rctx->timeout_usec); 
 
 	/* connect */
 	redis_do_connect(rctx);
