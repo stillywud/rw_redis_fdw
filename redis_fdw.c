@@ -982,53 +982,34 @@ redis_deserialize_fdw(List *list)
 
 	redis_deserialize_rtable(rctx, lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-  // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
+
 	redis_deserialize_rtable_cols(rctx, lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-  
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 	cell = PG_LIST_NEXT(list, cell);
-    // 这里打印 cell 的内容
-    elog(INFO, "Current cell value after redis_deserialize_rtable: %s", 
-         (char *)lfirst(cell)); // 假设 lfirst(cell) 返回的是一个字符串
-		 
+ 
 	rctx->host = deserializeString(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
-
+    elog(INFO, "Current cell value rctx->host: %s", rctx->host); 
 	rctx->port = (int)deserializeInt(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
+    elog(INFO, "Current cell value rctx->host: %d", rctx->port); 
 
 	rctx->password = deserializeString(lfirst(cell));
+	elog(INFO, "Current cell value rctx->password: %s", rctx->password); 
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->database = (int)deserializeInt(lfirst(cell));
+	elog(INFO, "Current cell value rctx->database: %d", rctx->database); 
+
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->table_type = (enum redis_data_type)deserializeInt(lfirst(cell));
+	elog(INFO, "Current cell value rctx->table_type: %d", rctx->table_type); 
+
 	cell = PG_LIST_NEXT(list, cell);
 
 	rctx->key = deserializeString(lfirst(cell));
+	elog(INFO, "Current cell value rctx->key: %d", rctx->key); 
+
 	cell = PG_LIST_NEXT(list, cell);
 	rctx->keyprefix = deserializeString(lfirst(cell));
 	cell = PG_LIST_NEXT(list, cell);
