@@ -3711,7 +3711,7 @@ redisPlanForeignModify(PlannerInfo *root,
 				tmpset = bms_copy(rte->modifiedCols);
 			#else
 				tmpset = bms_copy(rte->updatedCols);
-			#endif
+			#endif  
 		#endif
 
 		while ((i = bms_first_member(tmpset)) >= 0) {
